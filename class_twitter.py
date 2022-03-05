@@ -33,10 +33,12 @@ class TwitterScraper:
         self.newTweets = [t for t in filterTweets if not t.id in self.oldTweetIds]
 
     def makeEmailBody(self):
-        urlList = [x.urls[0].expanded_url for x in self.newTweets]
-        htmlList = [f"""<iframe border=0 frameborder=0 height=250 width=550 src="https://twitframe.com/show?url={p.quote(x)}"></iframe>""" for x in urlList]
+        htmlList = []
+        for nt in self.newTweets:
+            url = nt.urls[0].expanded_url
+            htmlList.append(f"<li><a href={url}>{nt.text}</a></li>")
         html = "\n".join(htmlList)
-        return f"""<p>{html}</p>"""
+        return f"""<p><ul>{html}</ul></p>"""
 
 
     def writeNewTweets(self):
