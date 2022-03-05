@@ -9,6 +9,14 @@ class Emailer:
         self.email = email
         self.password = password
 
+    @classmethod
+    def fromDict(cls, keys, tls=False):
+        host = keys["email_host"]
+        port = keys["email_port_tls"] if tls else keys["email_port_ssl"]
+        email = keys["email_address"]
+        password = keys["email_password"]
+        return cls(host, port, email, password)
+
     def constructEmail(self, to, subject, body, htmlContent=False):
         msg = EmailMessage()
         msg["Subject"] = subject

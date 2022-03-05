@@ -7,18 +7,30 @@ from csv import DictWriter
 
 
 class TwitterScraper:
-    def __init__(self, keys, id_csv_location="./id.csv"):
-        self.keys = keys
+    def __init__(self, access_token_key, access_token_secret, consumer_key, consumer_secret, id_csv_location="./id.csv"):
+        self.access_token_key = access_token_key
+        self.access_token_secret = access_token_secret
+        self.consumer_key = consumer_key
+        self.consumer_secret = consumer_secret
         self.id_csv_location = id_csv_location
         self.getApi()
         self.getOldTweetIds()
 
+    @classmethod
+    def fromDict(cls, keys, id_csv_location="./id.csv"):
+        access_token_key = keys["access_token_key"]
+        access_token_secret = keys["access_token_secret"]
+        consumer_key = keys["consumer_key"]
+        consumer_secret = keys["consumer_secret"]
+
+        return cls(access_token_key, access_token_secret, consumer_key, consumer_secret, id_csv_location)
+
     def getApi(self):
         self.api = tw.Api(
-            access_token_key=self.keys["access_token_key"],
-            access_token_secret=self.keys["access_token_secret"],
-            consumer_key=self.keys["consumer_key"],
-            consumer_secret=self.keys["consumer_secret"]
+            access_token_key=self.access_token_key,
+            access_token_secret=self.access_token_secret,
+            consumer_key=self.consumer_key,
+            consumer_secret=self.consumer_secret
         )
 
     def getTweets(self, filter_terms=["🎟", "ticket", "tickets", "all my bees members"], screen_name="BrentfordFC", count=100):
