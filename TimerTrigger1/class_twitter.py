@@ -17,7 +17,7 @@ class TwitterScraper:
         self.getOldTweetIds()
 
     @classmethod
-    def fromDict(cls, keys, id_csv_location="./id.csv"):
+    def fromDict(cls, keys, id_csv_location="TimerTrigger1/id.csv"):
         access_token_key = keys["access_token_key"]
         access_token_secret = keys["access_token_secret"]
         consumer_key = keys["consumer_key"]
