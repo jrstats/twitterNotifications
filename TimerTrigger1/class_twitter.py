@@ -3,7 +3,7 @@ import json
 import twitter as tw
 import pandas as pd
 import urllib.parse as p
-from csv import DictWriter
+from io import StringIO
 
 
 class TwitterScraper:
@@ -33,7 +33,8 @@ class TwitterScraper:
             consumer_secret=self.consumer_secret
         )
 
-    def getTweets(self, filter_terms=["🎟", "ticket", "tickets", "all my bees members"], screen_name="BrentfordFC", count=100):
+    def getTweets(self, oldTweets, filter_terms=["🎟", "ticket", "tickets", "all my bees members"], screen_name="BrentfordFC", count=100):
+        self.setOldTweets(oldTweets)
         allTweets = self.api.GetUserTimeline(
             screen_name=screen_name, 
             exclude_replies=True,
@@ -53,13 +54,22 @@ class TwitterScraper:
         return f"""<p><ul>{html}</ul></p>"""
 
 
-    def writeNewTweets(self):
-        with open(self.id_csv_location, 'a', newline="") as f:
-            writer_object = DictWriter(f, fieldnames=["id"])
-            for t in self.newTweets:
-                writer_object.writerow({"id": t.id})
+    # def writeNewTweets(self):
+    #     with open(self.id_csv_location, 'a', newline="") as f:
+    #         writer_object = DictWriter(f, fieldnames=["id"])
+    #         for t in self.newTweets:
+    #             writer_object.writerow({"id": t.id})
 
+    def makeAllTweetIds(self):
+        allTweetIds = [[t.id] for t in self.newTweets] + [[x] for x in self.oldTweetIds]
+        return pd.DataFrame(allTweetIds, columns=["id"]).to_csv()
 
+    def setOldTweets(self, oldTweets):
+        oldTweetsStr = StringIO(oldTweets)
+        try:
+            self.oldTweetIds = pd.read_csv(oldTweetsStr)["id"].values
+        except:
+            self.oldTweetIds = []
 
     def getOldTweetIds(self):
         try:
