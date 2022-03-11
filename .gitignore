@@ -129,5 +129,6 @@ appsettings.json
 local.settings.json
 .python_packages
 
-# keys
+# bespoke
 keys.json
+playground/
